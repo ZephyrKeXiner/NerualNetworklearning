@@ -10,19 +10,18 @@ def self_dataset(batch_size):
         return _cache["train_dataloader"], _cache["test_dataloader"]
 
     transform = Compose([
-        Resize((224, 224)),  # 调整图像大小
-        ToTensor(),  # 转换为张量
-        Normalize((0.4914, 0.4822, 0.4465), (0.2023, 0.1994, 0.2010))  # 归一化
+        Resize([224, 224]),
+        ToTensor()
     ])
 
-    train_data = datasets.CIFAR10(
+    train_data = datasets.FashionMNIST(
         root="./dataset",
         train=True,
         download=True,
         transform=transform
     )
 
-    test_data = datasets.CIFAR10(
+    test_data = datasets.FashionMNIST(
         root="./dataset",
         train=False,
         download=True,

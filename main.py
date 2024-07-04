@@ -13,15 +13,15 @@ train_dataloader, test_dataloader = data_handler.self_dataset(batch_size)
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
 block1 = nn.Sequential(
-    nn.Conv2d(1, 64 ,kernel_size=7, stride=2, padding=3),
+    nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3),
     nn.BatchNorm2d(64), nn.ReLU(),
     nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 )
 
-def resnet_block(input_channels, num_channels, num_residuals, first_block=True):
+def resnet_block(input_channels, num_channels, num_residuals, first_block=False):
     blk = []
     for i in range(num_residuals):
-        if i == 0 and first_block == False:
+        if i == 0 and not first_block:
             blk.append(ResNet(input_channels, num_channels,use_1x1conv=True))
         else:
             blk.append(ResNet(num_channels, num_channels))
@@ -33,9 +33,9 @@ block4 = nn.Sequential(*resnet_block(128, 256, 2))
 block5 = nn.Sequential(*resnet_block(256, 512, 2))
 
 model = nn.Sequential(
-    block2, block2, block3, block4, block5,
-        nn.AdaptiveAvgPool2d((1,1)),
-        nn.Flatten(), nn.Linear(512, 10)
+    block1, block2, block3, block4, block5,
+    nn.AdaptiveAvgPool2d((1,1)),
+    nn.Flatten(), nn.Linear(512, 10)
 )
 
 loss_fn = nn.CrossEntropyLoss()
